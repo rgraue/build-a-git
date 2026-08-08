@@ -1,0 +1,13 @@
+{
+  "name": "@build-a-git/core",
+  "version": "1.0.0",
+  "main": "dist/index.js",
+  "scripts": {
+    "build": "esbuild ./src/index.ts --bundle --platform=node --outdir=dist && npm run types",
+    "types": "tsc ./src/index.ts --declaration --emitDeclarationOnly --ignoreConfig --declarationDir dist/"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": ""
+}

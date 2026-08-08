@@ -1,0 +1,21 @@
+{
+  "name": "build-a-git-ui",
+  "version": "1.0.0",
+  "main": "index.js",
+    "workspaces": [
+    "packages/core",
+    "packages/electron",
+    "packages/react"
+  ],
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "esbuild": "^0.28.1",
+    "typescript": "^7.0.2"
+  }
+}

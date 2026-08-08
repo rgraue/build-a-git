@@ -1,0 +1,11 @@
+# global
+.vscode/
+
+# node
+dist/
+node_modules/
+build/
+
+# python
+.venv/
+__pycache__/
