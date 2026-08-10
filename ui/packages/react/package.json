@@ -5,7 +5,7 @@
   "scripts": {
     "start": "esbuild src/index.tsx --bundle --outfile=public/build/bundle.js --watch --servedir=public/",
     "build": "esbuild src/index.tsx --bundle --outfile=public/build/bundle.js && npm run types",
-    "types": "tsc ./src/index.tsx --declaration --emitDeclarationOnly --jsx react-jsx --ignoreConfig --declarationDir dist/"
+    "types": "tsc ./src/index.tsx --declaration --emitDeclarationOnly --jsx react-jsx --ignoreConfig --skipLibCheck --declarationDir dist/"
   },
   "keywords": [],
   "author": "",
@@ -13,8 +13,13 @@
   "description": "",
   "dependencies": {
     "@build-a-git/core": "1.0.0",
+    "@chakra-ui/react": "^3.36.1",
+    "@emotion/react": "^11.14.0",
+    "next-themes": "^0.4.6",
     "react": "^19.2.8",
-    "react-dom": "^19.2.8"
+    "react-dom": "^19.2.8",
+    "react-draggable": "^4.7.1",
+    "react-icons": "^5.7.0"
   },
   "devDependencies": {
     "@types/react": "^19.2.18",
