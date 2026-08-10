@@ -1,30 +1,39 @@
 import React, {useState, useRef} from "react";
 import { GitBranch, GitCommit } from '@build-a-git/core';
-import { Flex } from "@chakra-ui/react";
+import { Badge, Flex } from "@chakra-ui/react";
 import { BuildingBlock } from "./buildingBlock";
 import { DraggableComponent } from "../common/DraggableComponent";
 
 const testBranch: GitBranch = {
     commits: [
         {
-            commitSha: "4dcc84d"
+            commitSha: "long",
+            commitShort: "short",
+            branch:"this one"
         },
         {
-            commitSha: "5"
+            commitSha: "long",
+            commitShort: "short"
         },
         {
-            commitSha: "4"
+            commitSha: "long",
+            commitShort: "short"
         },
         {
-            commitSha: "3"
+            commitSha: "long",
+            commitShort: "short"
         },
         {
-            commitSha: "2"
+            commitSha: "long",
+            commitShort: "short"
         },
         {
-            commitSha: "1"
+            commitSha: "long",
+            commitShort: "short"
         }
-    ]
+    ],
+    default: true,
+    name: "branchName"
 }
 
 export interface BranchProps {
@@ -39,10 +48,19 @@ export const Branch = ({name}: BranchProps) => {
         return <BuildingBlock commit={commit}/>
     }
 
+    const formatBranchName = () => {
+        if (name.length > 12) {
+            return name.slice(0, 12) + '...';
+        }
+
+        return name;
+    }
+
     return <DraggableComponent nodeRef={nodeRef}>
-        <Flex direction={"column"} ref={nodeRef} w={'100px'}>
+        <Flex direction={"column"} ref={nodeRef} w={'150px'}>
             {branch.commits.map(makeBlock)}
-            <p>{name}</p>
+            <Badge colorPalette={'blue'} size={'lg'} variant={'surface'}>{formatBranchName()}</Badge>
+            {branch.default && <Badge colorPalette={'green'} size={'lg'} variant={'surface'}>Default</Badge>}
         </Flex>
     </DraggableComponent>
 

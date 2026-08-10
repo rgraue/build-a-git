@@ -13,7 +13,7 @@ export const Editor = () => {
             <Branch name={"another"}/>
             <Branch name={"another"}/>
             <Branch name={"another"}/>
-            <Branch name={"another"}/>
+            <Branch name={"SM-19999/this branch is long"}/>
         </DraggableCanvas>
     </Flex>
 }

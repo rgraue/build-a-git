@@ -8,7 +8,6 @@ export const DraggableCanvas = ({children}: {children: React.ReactElement | Reac
   const dragStart = useRef({ x: -2000, y: -2000 });
 
   const handleMouseDown = (e: any) => {
-    console.log(e.target)
     if (e.target.id == 'canvas') {
       setIsDragging(true);
     }
