@@ -4,6 +4,7 @@ version = "0.1.0"
 requires-python = ">=3.14"
 dependencies = [
     "fastapi>=0.141.1",
+    "pydantic>=2.13.4",
     "pygit2>=1.20.0",
     "tinydb>=4.9.0",
     "uvicorn>=0.52.1",
@@ -12,6 +13,7 @@ dependencies = [
 [dependency-groups]
 dev = [
     "black>=26.5.1",
+    "pyinstaller>=6.22.0",
     "pylint>=4.0.6",
     "pytest>=9.1.1",
 ]

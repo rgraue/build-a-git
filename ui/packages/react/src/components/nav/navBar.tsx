@@ -9,7 +9,8 @@ export const NavBar = () => {
       paddingBottom={"1rem"}
       paddingEnd={"5rem"}
       paddingStart={"5rem"}
-      backgroundColor={"AccentColor"}
+      backgroundColor={'darkslategray'}
+      h={'5%'}
     >
       <Flex
         justify={"space-between"}

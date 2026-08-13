@@ -1,3 +1,5 @@
+export * from './config'
+
 import { BLOCK_COLORS } from "../constants";
 
 export const getRandomColor = () => {

@@ -6,7 +6,7 @@ import { DraggableCanvas } from "../common/canvas";
 
 export const Editor = () => {
 
-    return <Flex h={'90vh'} backgroundColor={"Menu"}>
+    return <Flex h={'90.5%'} backgroundColor={"Menu"}>
         {/* <Branch name={"test"} /> */}
         <DraggableCanvas>
             <Branch name={"first"}/>

@@ -2,7 +2,7 @@ import React, {useState, useRef} from "react";
 import { GitBranch, GitCommit } from '@build-a-git/core';
 import { Badge, Flex } from "@chakra-ui/react";
 import { BuildingBlock } from "./buildingBlock";
-import { DraggableComponent } from "../common/DraggableComponent";
+import { DraggableComponent } from "../common/draggableComponent";
 
 const testBranch: GitBranch = {
     commits: [

@@ -1,11 +1,14 @@
 # global
 .vscode/
+.DS_Store
 
 # node
 dist/
 node_modules/
 build/
+out/
 
 # python
 .venv/
 __pycache__/
+*.egg-info/

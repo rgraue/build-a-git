@@ -7,7 +7,7 @@ const createWindow = () => {
   })
 
   win.loadFile('../../react/public/index.html');
-  // win.openDevTools();
+  win.openDevTools();
 }
 
 app.whenReady().then(() => {

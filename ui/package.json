@@ -2,7 +2,7 @@
   "name": "build-a-git-ui",
   "version": "1.0.0",
   "main": "index.js",
-    "workspaces": [
+  "workspaces": [
     "packages/core",
     "packages/electron",
     "packages/react"
@@ -17,5 +17,8 @@
   "dependencies": {
     "esbuild": "^0.28.1",
     "typescript": "^7.0.2"
+  },
+  "devDependencies": {
+    "@types/node": "^26.2.0"
   }
 }
