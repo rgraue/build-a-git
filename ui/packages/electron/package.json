@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "main": "./public/main.js",
   "scripts": {
-    "start": "SKIP_SERVER=false NODE_PATH=../../node_modules electron ./public/main.js",
+    "start": "SKIP_SERVER=true NODE_PATH=../../node_modules electron ./public/main.js",
     "build": "",
     "package": "NODE_PATH=../../node_modules electron-forge package",
     "make": "NODE_PATH=../../node_modules electron-forge make"
