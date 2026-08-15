@@ -5,6 +5,7 @@ from fastapi.middleware.cors import CORSMiddleware
 # ROUTERS
 from routers.repo_router import repo_router
 from routers.health_router import health_router
+from routers.branch_router import branch_router
 
 origins = [
     "http://localhost:8000",
@@ -17,6 +18,7 @@ def main():
     # add routers
     api.include_router(repo_router)
     api.include_router(health_router)
+    api.include_router(branch_router)
 
     # middleware
     api.add_middleware(

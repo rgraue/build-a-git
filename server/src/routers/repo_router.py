@@ -7,8 +7,10 @@ repo_router = APIRouter(prefix="/repo", tags=["demo"])
 
 @repo_router.get("/{path:path}")
 async def get_repo(path: str) -> RepoModel:
+    print(f"getting repo {path}")
     try:
         repo = get_cached_repo(path)
         return repo.dto()
     except Exception as e:
+        print(str(e))
         raise HTTPException(status_code=404, detail=str(e))
