@@ -2,8 +2,14 @@ import { Box, Flex, Text } from "@chakra-ui/react";
 import React from "react";
 import { HealthIcon } from "./healthIcon";
 import { config } from "@build-a-git/core";
+import { useWorkspace } from "../../contexts/workspaceContext";
 
 export const Footer = () => {
+    const workspace = useWorkspace();
+    const debug = () => {
+        console.log('debug', workspace);
+    }
+
     return (
         <Box
             // paddingTop={"1rem"}
@@ -27,7 +33,7 @@ export const Footer = () => {
 
                 </Flex>
                 <Flex gap={'.5rem'}>
-                    <Text textStyle={'sm'}>{config().version}</Text>
+                    <Text onClick={debug} textStyle={'sm'}>{config().version}</Text>
                    <HealthIcon />
                 </Flex>
             </Flex>

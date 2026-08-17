@@ -1,66 +1,50 @@
-import React, {useState, useRef} from "react";
-import { GitBranch, GitCommit } from '@build-a-git/core';
+import React, {useState, useRef, useEffect} from "react";
+import { Branch as BranchModel, Commit, Error } from '@build-a-git/core';
 import { Badge, Flex } from "@chakra-ui/react";
 import { BuildingBlock } from "./buildingBlock";
 import { DraggableComponent } from "../common/draggableComponent";
-
-const testBranch: GitBranch = {
-    commits: [
-        {
-            commitSha: "long",
-            commitShort: "short",
-            branch:"this one"
-        },
-        {
-            commitSha: "long",
-            commitShort: "short"
-        },
-        {
-            commitSha: "long",
-            commitShort: "short"
-        },
-        {
-            commitSha: "long",
-            commitShort: "short"
-        },
-        {
-            commitSha: "long",
-            commitShort: "short"
-        },
-        {
-            commitSha: "long",
-            commitShort: "short"
-        }
-    ],
-    default: true,
-    name: "branchName"
-}
+import { useWorkspace } from "../../contexts/workspaceContext";
+import { useRepo } from "../../contexts/repoContext";
 
 export interface BranchProps {
-    name: string
+    branch: BranchModel
 }
 
-export const Branch = ({name}: BranchProps) => {
+export const Branch = ({branch}: BranchProps) => {
+    const workspace = useWorkspace();
+    const repo = useRepo();
     const nodeRef = useRef(null);
-    const [branch, setBranch ] = useState<GitBranch>(testBranch);
+    const [commits, setCommits] = useState<Commit[]>([]);
 
-    const makeBlock = (commit: GitCommit) => {
-        return <BuildingBlock commit={commit}/>
+    const loadCommits = async () => {
+        const commitResult = await repo.getCommits(workspace.currentRepo!, branch.name, 0, 10);
+
+        if (!(commitResult as Error).detail) {
+            setCommits(ex => [...ex, ...(commitResult as Commit[])]);
+        }
+    }
+
+    useEffect(() => {
+        loadCommits();
+    }, []);
+
+    const makeBlock = (commit: Commit) => {
+        return <BuildingBlock commit={commit} branchName={branch.name}/>
     }
 
     const formatBranchName = () => {
-        if (name.length > 12) {
-            return name.slice(0, 12) + '...';
+        if (branch.name.length > 12) {
+            return branch.name.slice(0, 12) + '...';
         }
 
-        return name;
+        return branch.name;
     }
 
     return <DraggableComponent nodeRef={nodeRef}>
         <Flex direction={"column"} ref={nodeRef} w={'150px'}>
-            {branch.commits.map(makeBlock)}
+            {commits.map(makeBlock)}
             <Badge colorPalette={'blue'} size={'lg'} variant={'surface'}>{formatBranchName()}</Badge>
-            {branch.default && <Badge colorPalette={'green'} size={'lg'} variant={'surface'}>Default</Badge>}
+            {/* {branch.default && <Badge colorPalette={'green'} size={'lg'} variant={'surface'}>Default</Badge>} */}
         </Flex>
     </DraggableComponent>
 

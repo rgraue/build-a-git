@@ -1,6 +1,6 @@
 import React from "react";
-import { Box, Flex} from "@chakra-ui/react";
-import { ColorModeButton } from "../common/colorMode";
+import { Box, Flex, Text} from "@chakra-ui/react";
+import { RepoMenu } from "./repoMenu";
 
 export const NavBar = () => {
   return (
@@ -13,11 +13,12 @@ export const NavBar = () => {
       h={'5%'}
     >
       <Flex
+        direction={'row'}
         justify={"space-between"}
+        alignItems={'center'}
       >
-        <Flex justifyContent={"center"}>
-          Build A Git
-        </Flex>
+        <Text>Build A Git</Text>
+        <RepoMenu />
       </Flex>
     </Box>
   );
