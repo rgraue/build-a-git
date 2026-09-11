@@ -3,6 +3,8 @@ from models.git_model import RepoModel, BranchModel, CommitModel
 from exceptions.common import NotFoundException
 from utils.common import remove_ref_paths
 
+HEAD_REF = 'origin/HEAD'
+
 class Repo:
     def __init__(self, path: str):
         print(f"initializing repo at {path}")
@@ -11,9 +13,11 @@ class Repo:
         self.origin = self.repository.remotes['origin']
 
         # ----- BRANCHES ------
+        self.default = self.repository.lookup_reference('refs/remotes/origin/HEAD')
         self.current_branch = self.repository.head.shorthand
         self.local_branches = list(self.repository.branches.local)
         self.remote_branches = list(self.repository.branches.remote)
+        self.remote_branches.remove(HEAD_REF)
 
     def get_branch(self, branch_name: str) -> BranchModel:
         branch: Branch = self.repository.lookup_branch(branch_name, GIT_BRANCH_ALL)
@@ -56,7 +60,8 @@ class Repo:
                             sha=str(commit.id),
                             short=str(commit.id)[:7],
                             message=commit.message,
-                            author=str(commit.author)
+                            author=str(commit.author),
+                            parents=map(lambda o: str(o) ,commit.parent_ids)
                         )
                     )
         else:
@@ -68,5 +73,6 @@ class Repo:
         return RepoModel(
             name=self.path,
             origin=self.origin.url,
+            defualt=remove_ref_paths(self.default.target) if self.default is not None else None,
             branches=self.remote_branches + self.local_branches
         )

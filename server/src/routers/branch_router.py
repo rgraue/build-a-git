@@ -17,16 +17,17 @@ async def get_branches(path: str, remote: bool = False) -> list[BranchModel]:
         if remote is True:
             branches_to_find = branches_to_find + repo.remote_branches
 
+        # branches_to_find.remove("origin/HEAD")
         print(f"Searching {branches_to_find}")
         for branch in branches_to_find:
             branches.append(repo.get_branch(branch))
         return branches
     except NotFoundException as e:
         print(str(e))
-        return HTTPException(status_code=404, detail=str(e))
+        raise HTTPException(status_code=404, detail=str(e))
     except Exception as e:
         print(str(e))
-        return HTTPException(status_code=500)
+        raise HTTPException(status_code=500, detail=str(e))
 
 
 @branch_router.get('/{path:path}')
@@ -37,21 +38,7 @@ async def get_branch(path: str, branch: str) -> BranchModel:
         return repo.get_branch(branch)
     except NotFoundException as e:
         print(str(e))
-        return HTTPException(status_code=404, detail=str(e))
+        raise HTTPException(status_code=404, detail=str(e))
     except Exception as e:
         print(str(e))
-        return HTTPException(status_code=500)
-
-@branch_router.get('commits/{path:path}')
-async def get_branch_commits(path: str, branch: str, start: int = 0, depth: int = 10) -> list[CommitModel]:
-    print(f"getting commits in {path} {branch}")
-    try:
-        repo = get_cached_repo(path)
-        commits = repo.walk_commits(branch, start, depth)
-        return commits
-    except NotFoundException as e:
-        print(str(e))
-        return HTTPException(status_code=404, detail=str(e))
-    except Exception as e:
-        print(str(e))
-        return HTTPException(status_code=500)
+        raise HTTPException(status_code=500, detail=str(e))

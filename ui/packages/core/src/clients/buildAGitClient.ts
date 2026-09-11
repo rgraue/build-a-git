@@ -47,7 +47,7 @@ export class BuildAGitClient {
     async getBranches(url: string): Promise<Branch[] | Error> {
         const encodedRepoPath = encodeURIComponent(url);
         const response = await fetch(
-            `${this.serverUrl}/branch/${encodedRepoPath}/`, {
+            `${this.serverUrl}/branch/${encodedRepoPath}/?remote=true`, {
             method: 'GET',
             }
         );

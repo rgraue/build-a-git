@@ -8,6 +8,7 @@ class BranchModel(BaseModel):
 class RepoModel(BaseModel):
     name: str
     origin: str
+    defualt: str | None
     branches: list[str]
 
 class CommitModel(BaseModel):
@@ -15,3 +16,4 @@ class CommitModel(BaseModel):
     short: str
     message: str
     author: str
+    parents: list[str]
