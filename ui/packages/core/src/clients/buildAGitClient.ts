@@ -1,20 +1,31 @@
 export interface Repo {
     name: string,
-    origin: string,
+    origin?: string,
+    default: string,
     branches: string[]
 }
 
 export interface Branch {
     name: string,
-    origin?: string,
+    upstream?: string,
     current: boolean
 }
 
 export interface Commit {
     sha: string,
     short: string,
+    branch: string,
     message: string,
-    author: string
+    author: string,
+    parents: string[]
+}
+
+export interface RepoTree {
+    default_branch: string,
+    base_branch: string,
+    limbs: {
+        [branch: string]: Commit[]
+    }
 }
 
 export interface Error {
@@ -91,5 +102,23 @@ export class BuildAGitClient {
         }
 
         return await response.json() as Commit[]
+    }
+
+    async getRepoTree(url: string, base: string, start: number, depth: number): Promise<RepoTree | Error> {
+        const encodedRepoPath = encodeURIComponent(url);
+        const encodedBase = encodeURIComponent(base);
+
+        const response = await fetch(
+            `${this.serverUrl}/repo/pretty/${encodedRepoPath}?base=${encodedBase}&start=${start}&depth=${depth}`,
+            {
+                method: 'GET',
+            }
+        );
+
+        if (!response.ok) {
+            return await response.json() as Error
+        }
+
+        return await response.json() as RepoTree
     }
 }

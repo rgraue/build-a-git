@@ -7,42 +7,29 @@ import { useWorkspace } from "../../contexts/workspaceContext";
 import { useRepo } from "../../contexts/repoContext";
 
 export interface BranchProps {
-    branch: BranchModel
+    name: string,
+    limb: Commit[]
 }
 
-export const Branch = ({branch}: BranchProps) => {
-    const workspace = useWorkspace();
-    const repo = useRepo();
+export const Branch = ({name, limb}: BranchProps) => {
     const nodeRef = useRef(null);
-    const [commits, setCommits] = useState<Commit[]>([]);
 
-    const loadCommits = async () => {
-        const commitResult = await repo.getCommits(workspace.currentRepo!, branch.name, 0, 10);
-
-        if (!(commitResult as Error).detail) {
-            setCommits(ex => [...ex, ...(commitResult as Commit[])]);
-        }
-    }
-
-    useEffect(() => {
-        loadCommits();
-    }, []);
 
     const makeBlock = (commit: Commit) => {
-        return <BuildingBlock commit={commit} branchName={branch.name}/>
+        return <BuildingBlock commit={commit} branchName={name}/>
     }
 
     const formatBranchName = () => {
-        if (branch.name.length > 12) {
-            return branch.name.slice(0, 12) + '...';
+        if (name.length > 12) {
+            return name.slice(0, 12) + '...';
         }
 
-        return branch.name;
+        return name;
     }
 
     return <DraggableComponent nodeRef={nodeRef}>
         <Flex direction={"column"} ref={nodeRef} w={'150px'}>
-            {commits.map(makeBlock)}
+            {limb.map(makeBlock)}
             <Badge colorPalette={'blue'} size={'lg'} variant={'surface'}>{formatBranchName()}</Badge>
             {/* {branch.default && <Badge colorPalette={'green'} size={'lg'} variant={'surface'}>Default</Badge>} */}
         </Flex>

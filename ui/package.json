@@ -8,7 +8,7 @@
     "packages/react"
   ],
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "build": "npm run build --workspaces"
   },
   "keywords": [],
   "author": "",

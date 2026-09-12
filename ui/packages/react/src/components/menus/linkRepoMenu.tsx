@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useState } from "react";
 import { Alert, Button, Drawer, Flex, Group, Input, Portal, Text, createOverlay} from "@chakra-ui/react";
 import { useRepo } from "../../contexts/repoContext";
-import { Error } from "@build-a-git/core";
+import { Error, Repo } from "@build-a-git/core";
 import { toast, toaster } from "../common/toaster";
 import { useWorkspace, workspaceContext } from "../../contexts/workspaceContext";
 
@@ -12,10 +12,11 @@ export const LinkRepoMenu = createOverlay<any>((props) => {
     const [success, setSuccess] = useState(false);
     const [error, setError] = useState('');
     const [controlledOpen, setControlledOpen] = useState(true);
+    const [repo, setRepo] = useState<Repo>();
 
 
     useEffect(() => {
-        if (success) {
+        if (repo) {
             // queueMicrotask(() => {
                 // toast.create({
                 //     title: `Successfully linked Repo`,
@@ -24,12 +25,12 @@ export const LinkRepoMenu = createOverlay<any>((props) => {
                 //     closable: true,
                 //     duration: 3000,
                 // });
-                workspace.setContext(ex => ({...ex, currentRepo: path, linkedRepos: [...ex.linkedRepos, path]}));
+                workspace.setContext(ex => ({...ex, currentRepo: repo, linkedRepos: [...ex.linkedRepos, path]}));
                 // workspace.
                 setControlledOpen(false);
             // })
         }
-    }, [success]);
+    }, [repo]);
 
     const linkRepo = async () => {
         const repo = await repoClient.getRepo(path);
@@ -42,6 +43,7 @@ export const LinkRepoMenu = createOverlay<any>((props) => {
         }
 
         setSuccess(true);
+        setRepo(repo as Repo);
     };
 
 

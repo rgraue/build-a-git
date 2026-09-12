@@ -1,12 +1,13 @@
+import { Repo } from "@build-a-git/core";
 import React, { useContext, createContext, useState, SetStateAction } from "react";
 
 export interface WorkspaceState {
-    currentRepo?: string
+    currentRepo?: Repo
     linkedRepos: string[]
 }
 
 export class Workspace {
-    currentRepo: string = '__NONE'
+    currentRepo?: Repo = undefined
     linkedRepos: string[] = []
     setContext: React.Dispatch<SetStateAction<Workspace>> = () => {}
 }

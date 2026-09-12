@@ -1,5 +1,5 @@
 from pygit2 import Repository, Branch, GIT_SORT_TIME, GIT_BRANCH_ALL
-from models.git_model import RepoModel, BranchModel, CommitModel
+from models.git_model import RepoModel, BranchModel, CommitModel, RepoTree
 from exceptions.common import NotFoundException
 from utils.common import remove_ref_paths
 
@@ -10,14 +10,25 @@ class Repo:
         print(f"initializing repo at {path}")
         self.path = path
         self.repository = Repository(path)
-        self.origin = self.repository.remotes['origin']
+        self.origin = None if 'origin' not in self.repository.remotes else self.repository.remotes['origin']
 
         # ----- BRANCHES ------
-        self.default = self.repository.lookup_reference('refs/remotes/origin/HEAD')
         self.current_branch = self.repository.head.shorthand
         self.local_branches = list(self.repository.branches.local)
         self.remote_branches = list(self.repository.branches.remote)
-        self.remote_branches.remove(HEAD_REF)
+        self.all_branches = self.local_branches + self.remote_branches
+
+        self.default = (
+             next((name for name in ["main", "master" ] if name in self.all_branches), None) 
+             if self.origin is None 
+             else self.repository.lookup_reference('refs/remotes/origin/HEAD')
+        )
+
+        if HEAD_REF in self.remote_branches:
+            self.remote_branches.remove(HEAD_REF)
+
+        if HEAD_REF in self.all_branches:
+                    self.all_branches.remove(HEAD_REF)
 
     def get_branch(self, branch_name: str) -> BranchModel:
         branch: Branch = self.repository.lookup_branch(branch_name, GIT_BRANCH_ALL)
@@ -59,6 +70,7 @@ class Repo:
                         CommitModel(
                             sha=str(commit.id),
                             short=str(commit.id)[:7],
+                            branch=branch_name,
                             message=commit.message,
                             author=str(commit.author),
                             parents=map(lambda o: str(o) ,commit.parent_ids)
@@ -68,11 +80,20 @@ class Repo:
             raise NotFoundException(f"branch {branch_name} not found")
 
         return commits
+
+    def build_pruned_tree(self, base: str, start: int, depth: int) -> RepoTree:
+        all_commits = list(map(lambda branch: self.walk_commits(branch, start, depth), self.all_branches))
+
+        tree: RepoTree = RepoTree.from_commits(all_commits, base, self.default)
+        tree.prune()
+
+        return tree
+
         
     def dto(self) -> RepoModel:
         return RepoModel(
             name=self.path,
-            origin=self.origin.url,
-            defualt=remove_ref_paths(self.default.target) if self.default is not None else None,
-            branches=self.remote_branches + self.local_branches
+            origin=None if self.origin is None else self.origin.url,
+            default=self.default,
+            branches=self.all_branches
         )

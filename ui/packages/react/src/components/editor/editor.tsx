@@ -1,41 +1,44 @@
 import React, { useContext, useEffect, useState } from "react";
 import { BuildingBlock } from "./buildingBlock";
-import { Flex } from "@chakra-ui/react";
+import { Flex, Spinner, Text } from "@chakra-ui/react";
 import { Branch } from "./branch";
 import { DraggableCanvas } from "../common/canvas";
 import { useRepo } from "../../contexts/repoContext";
 import { useWorkspace } from "../../contexts/workspaceContext";
-import { Branch as BranchModel, Error } from "@build-a-git/core";
+import { RepoTree, Error } from "@build-a-git/core";
 
 export const Editor = () => {
     const { currentRepo } = useWorkspace();
     const repo = useRepo();
+    const [tree, setTree] = useState<RepoTree>();
 
-    console.log('satte', currentRepo);
-
-    const [branches, setBranches] = useState<BranchModel[]>([]);
-
-    const loadBranches = async () => {
-        const branches = await repo.getBranches(currentRepo!);
-        if (!(branches as Error).detail) {
-            setBranches(() => (branches as BranchModel[]));
-        }
+    const loadTree = async () => {
+        const repoTree = await repo.getRepoTree(currentRepo!.name, currentRepo?.default || 'main', 0, 10);
+        setTree(repoTree as RepoTree);
     }
 
     useEffect(() => {
-            console.log('this thing')
-            loadBranches();
+            loadTree();
     }, [currentRepo]); 
 
 
-    const mapBranches = (branch: BranchModel) => {
-        return <Branch branch={branch}/>
+    const mapTree = () => {
+        const limbs = tree?.limbs
+
+        if (limbs) {
+            return Object.keys(limbs).map(key => {
+                return <Branch name={key} limb={limbs[key]}/>
+            })
+        } else {
+            console.log("no limbs in tree", tree);
+            return <Spinner />
+        }
     }
 
     return <Flex h={'90.5%'} backgroundColor={"Menu"}>
         {/* <Branch name={"test"} /> */}
         <DraggableCanvas>
-            {branches && branches.map(mapBranches)}
+            {mapTree()}
         </DraggableCanvas>
     </Flex>
 }
