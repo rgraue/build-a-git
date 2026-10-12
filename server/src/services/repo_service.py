@@ -19,7 +19,7 @@ class Repo:
         self.all_branches = self.local_branches + self.remote_branches
 
         self.default = (
-             next((name for name in ["main", "master" ] if name in self.all_branches), None) 
+             next((name for name in ["main", "master" ] if name in self.all_branches), None)
              if self.origin is None 
              else self.repository.lookup_reference('refs/remotes/origin/HEAD')
         )
@@ -41,9 +41,10 @@ class Repo:
             remote_name = branch.upstream_name
         except:
             None
-        
+
         return BranchModel(
-            name=remove_ref_paths(branch.name),
+            name=branch_name,
+            local=branch_name in self.local_branches,
             upstream=remove_ref_paths(remote_name) if remote_name else None,
             current=self.current_branch == branch_name
         )
@@ -82,9 +83,13 @@ class Repo:
         return commits
 
     def build_pruned_tree(self, base: str, start: int, depth: int) -> RepoTree:
-        all_commits = list(map(lambda branch: self.walk_commits(branch, start, depth), self.all_branches))
+        tree = RepoTree(default_branch=self.default, base_branch=base, limbs={})
+        for branch_name in self.all_branches:
+            branch = self.get_branch(branch_name)
+            branch_commits = self.walk_commits(branch_name, start, depth)
 
-        tree: RepoTree = RepoTree.from_commits(all_commits, base, self.default)
+            tree.add_limb(branch, branch_commits)
+
         tree.prune()
 
         return tree

@@ -7,6 +7,7 @@ export interface Repo {
 
 export interface Branch {
     name: string,
+    local: boolean,
     upstream?: string,
     current: boolean
 }
@@ -20,11 +21,16 @@ export interface Commit {
     parents: string[]
 }
 
+export interface RepoLimb {
+    local: Commit[],
+    upstream: Commit[]
+}
+
 export interface RepoTree {
     default_branch: string,
     base_branch: string,
     limbs: {
-        [branch: string]: Commit[]
+        [branch: string]: RepoLimb
     }
 }
 

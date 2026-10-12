@@ -5,16 +5,20 @@ import { buildingBlockMenu } from "../menus/buildingBlockMenu";
 
 export interface BuildingBlockProps {
     commit: Commit,
-    branchName: string
+    branchName: string,
+    isDiff: boolean
 }
 
-export const BuildingBlock = ({commit, branchName}: BuildingBlockProps) => {
+export const BuildingBlock = ({commit, branchName, isDiff}: BuildingBlockProps) => {
+    const opacity = isDiff ? "80" : "ff";
+
+
     const buildingBlockStyle: React.CSSProperties = {
         height: '50px',
-        backgroundColor: getRandomColor(),
+        backgroundColor: getRandomColor() + opacity,
         clipPath: 'url(#mask)',
         display: 'flex',
-        justifyContent: 'center', 
+        justifyContent: 'center',
         alignItems: 'center',
         
     }
@@ -34,6 +38,7 @@ export const BuildingBlock = ({commit, branchName}: BuildingBlockProps) => {
                 </defs>
             </svg>
             <Box 
+                id={commit.sha}
                 style={buildingBlockStyle} 
                 onClick={handleClick} 
                 key={`${commit.sha}-${branchName}`}

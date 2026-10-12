@@ -8,8 +8,12 @@ class RepoModel(BaseModel):
 
 class BranchModel(BaseModel):
     name: str
+    local: bool
     upstream: str | None
     current: bool
+
+    def get_shorthand_name(self):
+        return self.name.removeprefix("origin/")
 
 class CommitModel(BaseModel):
     sha: str
@@ -19,37 +23,36 @@ class CommitModel(BaseModel):
     author: str
     parents: list[str]
 
+class RepoLimb(BaseModel):
+    local: list[CommitModel]
+    upstream: list[CommitModel]
+
 class RepoTree(BaseModel):
     default_branch: str
     base_branch: str
-    limbs: dict[str, list[CommitModel]]
+    limbs: dict[str, RepoLimb]
 
-    def from_commits(all_commits: list[list[CommitModel]], base: str, default: str) -> RepoTree:
-        tree = RepoTree(
-            default_branch=default,
-            base_branch=base,
-            limbs={}
-        )
+    def add_limb(self, branch: BranchModel, commits: list[CommitModel]):
+        shorthand = branch.get_shorthand_name()
 
-        for branch in all_commits:
-            for commit in branch:
+        if shorthand not in self.limbs:
+            self.limbs[shorthand] = RepoLimb(local=[], upstream=[])
 
-                if commit.branch not in tree.limbs:
-                    tree.limbs[commit.branch] = []
-
-                tree.limbs[commit.branch].append(commit)
-    
-        return tree
+        if branch.local:
+            self.limbs[shorthand].local = commits
+        else:
+            self.limbs[shorthand].upstream = commits
 
     def prune(self):
         for branch_name in self.limbs:
     
             if branch_name == self.base_branch:
-                print(f"base set to {self.base_branch}. skipping prune")
+                print(f"base set to {self.base_branch}. skipping pruned")
                 continue
 
             print(f"pruning {branch_name}")
-            self.limbs[branch_name] = self.__filter_limb(self.limbs[self.base_branch], self.limbs[branch_name])
+            self.limbs[branch_name].local = self.__filter_limb(self.limbs[self.base_branch].local, self.limbs[branch_name].local)
+            self.limbs[branch_name].upstream = self.__filter_limb(self.limbs[self.base_branch].upstream, self.limbs[branch_name].upstream)
 
     def __filter_limb(self, base: list[CommitModel], to_filter: list[CommitModel]):
         filtered: list[CommitModel] = []
